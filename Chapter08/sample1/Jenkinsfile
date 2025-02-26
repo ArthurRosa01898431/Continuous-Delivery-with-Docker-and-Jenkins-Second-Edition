@@ -13,14 +13,44 @@ pipeline {
 
                     if (branchName == 'main') {
                         echo "Running main branch pipeline..."
-                        mainBranchExecution()
+                        env.RUN_MAIN = 'true'
                     } else if (branchName.contains('feature')) {
                         echo "Running feature branch pipeline..."
-                        featureBranchExecution()
+                        env.RUN_FEATURE = 'true'
                     } else {
                         error("Pipeline failed: Branch does not meet execution criteria.")
                     }
                 }
+            }
+        }
+
+        stage('Run tests and generate reports') {
+            when {
+                expression { env.RUN_MAIN == 'true' }
+            }
+            steps {
+                sh """
+                cd Chapter08/sample1
+                chmod +x gradlew
+                ./gradlew jacocoTestReport
+                ./gradlew jacocoTestCoverageVerification
+                """
+                publishHTML([
+                    target: [
+                        reportDir: 'Chapter08/sample1/build/reports/checkstyle',
+                        reportFiles: 'index.html',
+                        reportName: "jacoco checkstyle"
+                    ]
+                ])
+            }
+        }
+
+        stage('Everything else') {
+            when {
+                expression { env.RUN_FEATURE == 'true' }
+            }
+            steps {
+                echo 'Running everything else...'
             }
         }
     }
@@ -31,40 +61,6 @@ pipeline {
         }
         failure {
             echo 'The pipeline failed.'
-        }
-    }
-}
-
-def mainBranchExecution() {
-    stage('Run tests and generate reports') {
-        when {
-            anyOf {
-                changeset pattern: 'Chapter08/sample1/src/main/java/.+\\.java', comparator: 'REGEXP'
-                changeset pattern: 'Chapter08/sample1/src/test/java/.+\\.java', comparator: 'REGEXP'
-            }
-        }
-        steps {
-            sh """
-            cd Chapter08/sample1
-            chmod +x gradlew
-            ./gradlew jacocoTestReport
-            ./gradlew jacocoTestCoverageVerification
-            """
-            publishHTML([
-                target: [
-                    reportDir: 'Chapter08/sample1/build/reports/checkstyle',
-                    reportFiles: 'index.html',
-                    reportName: "jacoco checkstyle"
-                ]
-            ])
-        }
-    }
-}
-
-def featureBranchExecution() {
-    stage('Everything else') {
-        steps {
-            echo 'Feature branch: Running everything except test execution.'
         }
     }
 }
