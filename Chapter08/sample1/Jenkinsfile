@@ -7,19 +7,51 @@ pipeline {
 
     stages {
         stage('Check Branch') {
-          script {
-               def branchName = env.BRANCH_NAME
+            steps {
+                script {
+                    def branchName = env.BRANCH_NAME
 
-               if (branchName == 'main') {
-                    echo "Running main branch pipeline..."
-                    mainBranchExecution()
-               } else if (branchName.contains('feature')) {
-                    echo "Running feature branch pipeline..."
-                    featureBranchExecution()
-               } else {
-                    error("Pipeline failed: Branch does not meet execution criteria.")
-               }
-          }
+                    if (branchName == 'main') {
+                        echo "Running main branch pipeline..."
+                        env.RUN_MAIN = 'true'
+                    } else if (branchName.contains('feature')) {
+                        echo "Running feature branch pipeline..."
+                        env.RUN_FEATURE = 'true'
+                    } else {
+                        error("Pipeline failed: Branch does not meet execution criteria.")
+                    }
+                }
+            }
+        }
+
+        stage('Run tests and generate reports') {
+            when {
+                expression { env.RUN_MAIN == 'true' }
+            }
+            steps {
+                sh """
+                cd Chapter08/sample1
+                chmod +x gradlew
+                ./gradlew jacocoTestReport
+                ./gradlew jacocoTestCoverageVerification
+                """
+                publishHTML([
+                    target: [
+                        reportDir: 'Chapter08/sample1/build/reports/checkstyle',
+                        reportFiles: 'index.html',
+                        reportName: "jacoco checkstyle"
+                    ]
+                ])
+            }
+        }
+
+        stage('Everything else') {
+            when {
+                expression { env.RUN_FEATURE == 'true' || env.RUN_MAIN == 'true' }
+            }
+            steps {
+                echo 'Running everything else...'
+            }
         }
     }
 
@@ -29,34 +61,6 @@ pipeline {
         }
         failure {
             echo 'The pipeline failed.'
-        }
-    }
-}
-
-def mainBranchExecution() {
-    stage('Run tests and generate reports') {
-        steps {
-            sh """
-            cd Chapter08/sample1
-            chmod +x gradlew
-            ./gradlew jacocoTestReport
-            ./gradlew jacocoTestCoverageVerification
-            """
-            publishHTML([
-                target: [
-                    reportDir: 'Chapter08/sample1/build/reports/checkstyle',
-                    reportFiles: 'index.html',
-                    reportName: "jacoco checkstyle"
-                ]
-            ])
-        }
-    }
-}
-
-def featureBranchExecution() {
-    stage('Everything else') {
-        steps {
-            echo 'Feature branch: Running everything except test execution.'
         }
     }
 }
