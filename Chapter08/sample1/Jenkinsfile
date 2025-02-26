@@ -7,21 +7,19 @@ pipeline {
 
     stages {
         stage('Check Branch') {
-            steps {
-                script {
-                    def branchName = env.BRANCH_NAME
+          script {
+               def branchName = env.BRANCH_NAME
 
-                    if (branchName == 'main') {
-                        echo "Running main branch pipeline..."
-                        mainBranchExecution()
-                    } else if (branchName.contains('feature')) {
-                        echo "Running feature branch pipeline..."
-                        featureBranchExecution()
-                    } else {
-                        error("Pipeline failed: Branch does not meet execution criteria.")
-                    }
-                }
-            }
+               if (branchName == 'main') {
+                    echo "Running main branch pipeline..."
+                    mainBranchExecution()
+               } else if (branchName.contains('feature')) {
+                    echo "Running feature branch pipeline..."
+                    featureBranchExecution()
+               } else {
+                    error("Pipeline failed: Branch does not meet execution criteria.")
+               }
+          }
         }
     }
 
