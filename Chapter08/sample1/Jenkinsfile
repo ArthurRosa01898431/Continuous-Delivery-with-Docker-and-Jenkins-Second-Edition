@@ -53,12 +53,6 @@ def mainBranchExecution() {
             ])
         }
     }
-    
-    stage('Everything else') {
-        steps {
-            echo 'This will run regardless of Java file modification.'
-        }
-    }
 }
 
 def featureBranchExecution() {
