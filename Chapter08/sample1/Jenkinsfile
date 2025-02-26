@@ -14,7 +14,7 @@ pipeline {
                     if (branchName == 'main') {
                         echo "Running main branch pipeline..."
                         mainBranchExecution()
-                    } else if (branchName.contains('features')) {
+                    } else if (branchName.contains('feature')) {
                         echo "Running feature branch pipeline..."
                         featureBranchExecution()
                     } else {
