@@ -1,73 +1,49 @@
-// Trigger run 
+// This example uses Jenkin's "declarative" syntax
 pipeline {
-    agent {
+     agent {
           label 'docker-agent'
      }  
-
-    triggers {
-        pollSCM('* * * * *')
-    }
-
-    stages {
-        stage('Check Branch') {
-            steps {
-                script {
-                    def branchName = env.BRANCH_NAME
-
-                    if (branchName == 'main') {
-                        echo "Running main branch pipeline..."
-                        mainBranchExecution()
-                    } else if (branchName.contains('features')) {
-                        echo "Running feature branch pipeline..."
-                        featureBranchExecution()
-                    } else {
-                        error("Pipeline failed: Branch does not meet execution criteria.")
+     triggers {
+          pollSCM('* * * * *')
+     }
+     
+     stages {
+          stage('Run tests and generate reports') {
+               when {
+                    anyOf {
+                         changeset pattern: 'Chapter08/sample1/src/main/java/.+\\.java', comparator: 'REGEXP'
+                         changeset pattern: 'Chapter08/sample1/src/test/java/.+\\.java', comparator: 'REGEXP'
                     }
-                }
-            }
-        }
-    }
+               }
+               steps {
+                    sh """
+                    cd Chapter08/sample1
+                    chmod +x gradlew
+                    ./gradlew jacocoTestReport
+                    ./gradlew jacocoTestCoverageVerification
+                    """
+                    publishHTML([
+                    target: [
+                         reportDir: 'Chapter08/sample1/build/reports/checkstyle',
+                         reportFiles: 'index.html',
+                         reportName: "jacoco checkstyle"]
+                    ])
+               }
+          }
 
-    post {
+          stage('Everything else') {
+               steps {
+                   echo 'This will run regardless if java file is modifed.'
+               }
+          }  
+     }
+
+     post {
         success {
             echo 'The pipeline ran successfully!'
         }
         failure {
             echo 'The pipeline failed.'
-        }
-    }
-}
-
-def mainBranchExecution() {
-    stage('Run tests and generate reports') {
-        when {
-            anyOf {
-                changeset pattern: 'Chapter08/sample1/src/main/java/.+\\.java', comparator: 'REGEXP'
-                changeset pattern: 'Chapter08/sample1/src/test/java/.+\\.java', comparator: 'REGEXP'
-            }
-        }
-        steps {
-            sh """
-            cd Chapter08/sample1
-            chmod +x gradlew
-            ./gradlew jacocoTestReport
-            ./gradlew jacocoTestCoverageVerification
-            """
-            publishHTML([
-                target: [
-                    reportDir: 'Chapter08/sample1/build/reports/checkstyle',
-                    reportFiles: 'index.html',
-                    reportName: "jacoco checkstyle"
-                ]
-            ])
-        }
-    }
-}
-
-def featureBranchExecution() {
-    stage('Everything else') {
-        steps {
-            echo 'Feature branch: Running everything except test execution.'
         }
     }
 }
