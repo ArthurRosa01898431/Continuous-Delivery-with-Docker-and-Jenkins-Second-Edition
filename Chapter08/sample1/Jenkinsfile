@@ -26,7 +26,7 @@ pipeline {
 
         stage('Run tests and generate reports') {
             when {
-                expression { env.RUN_MAIN == 'true' }
+                expression { env.RUN_MAIN == 'true' } 
             }
             steps {
                 sh """
