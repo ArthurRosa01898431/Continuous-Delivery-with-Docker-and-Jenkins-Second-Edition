@@ -7,9 +7,9 @@ pipeline {
      stages {
           stage("Compile") {
                steps {
-                    sh "cd Chapter08/sample1"
-                    sh "chmod +x gradlew"
-                    sh "./gradlew compileJava"
+                    sh "cd Chapter08/sample1
+                      chmod +x gradlew
+                     ./gradlew compileJava"
                }
           }
           stage("Unit test") {
