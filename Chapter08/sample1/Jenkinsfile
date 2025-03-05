@@ -46,18 +46,18 @@ pipeline {
                 echo 'Running everything else...'
             }
         }
-    }
+    
 
-    stage('jacoco report') {
-        publishHTML([
-                        target: [
-                            reportDir: 'Chapter08/sample1/build/reports/checkstyle',
-                            reportFiles: 'index.html',
-                            reportName: "jacoco checkstyle" 
-                        ]
-                    ])
+        stage('jacoco report') {
+            publishHTML([
+                            target: [
+                                reportDir: 'Chapter08/sample1/build/reports/checkstyle',
+                                reportFiles: 'index.html',
+                                reportName: "jacoco checkstyle" 
+                            ]
+                        ])
+        }
     }
-
     post {
         success {
             echo 'The pipeline ran successfully!'
