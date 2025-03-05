@@ -34,16 +34,42 @@ pipeline {
             }
         }
 
-        stage('Everything else') {
+        stage('Compile') {
             when {
                 expression { env.RUN_NON_MAIN  == 'true' }
             }
             steps {
-                echo 'Running everything else...'
+                    sh "./gradlew compileJava"
+               }
+        }
+
+        stage('Unit test') {
+            when {
+                expression { env.RUN_NON_MAIN  == 'true' }
             }
+            steps {
+                    sh "./gradlew test"
+               }
+        }
+        
+        stage('Static code analysis') {
+            when {
+                expression { env.RUN_NON_MAIN  == 'true' }
+            }
+            steps {
+                    sh "./gradlew checkstyleMain"
+               }
+        }
+
+        stage('Package') {
+            when {
+                expression { env.RUN_NON_MAIN  == 'true' }
+            }
+            steps {
+                    sh "./gradlew build"
+               }
         }
     
-
         stage('jacoco report') {
             steps {
                 publishHTML([
