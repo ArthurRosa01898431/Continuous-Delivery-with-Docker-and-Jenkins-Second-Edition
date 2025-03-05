@@ -14,9 +14,9 @@ pipeline {
                     if (branchName == 'main') {
                         echo "Running main branch pipeline..."
                         env.RUN_MAIN = 'true'
-                    } else if (branchName.contains('feature')) {
-                        echo "Running feature branch pipeline..."
-                        env.RUN_FEATURE = 'true'
+                    } else if (branchName != 'main') {
+                        echo "Running non main branch pipeline..."
+                        env.RUN_NON-MAIN = 'true'
                     } else {
                         error("Pipeline failed: Branch does not meet execution criteria.")
                     }
@@ -35,24 +35,27 @@ pipeline {
                 ./gradlew jacocoTestReport
                 ./gradlew jacocoTestCoverageVerification
                 """
-                publishHTML([
-                    target: [
-                        reportDir: 'Chapter08/sample1/build/reports/checkstyle',
-                        reportFiles: 'index.html',
-                        reportName: "jacoco checkstyle" 
-                    ]
-                ])
             }
         }
 
         stage('Everything else') {
             when {
-                expression { env.RUN_FEATURE == 'true' }
+                expression { env.RUN_NON-MAIN == 'true' }
             }
             steps {
                 echo 'Running everything else...'
             }
         }
+    }
+
+    stage('jacoco report') {
+        publishHTML([
+                        target: [
+                            reportDir: 'Chapter08/sample1/build/reports/checkstyle',
+                            reportFiles: 'index.html',
+                            reportName: "jacoco checkstyle" 
+                        ]
+                    ])
     }
 
     post {
