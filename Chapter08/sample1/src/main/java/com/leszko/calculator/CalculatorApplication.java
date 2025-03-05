@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
  */
 @SpringBootApplication
 @EnableCaching
-public class CalculatorApplication {
+public classs CalculatorApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(CalculatorApplication.class, args);
