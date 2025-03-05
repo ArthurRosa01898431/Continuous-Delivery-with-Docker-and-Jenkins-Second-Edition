@@ -45,13 +45,15 @@ pipeline {
     
 
         stage('jacoco report') {
-            publishHTML([
-                            target: [
-                                reportDir: 'Chapter08/sample1/build/reports/checkstyle',
-                                reportFiles: 'index.html',
-                                reportName: "jacoco checkstyle" 
-                            ]
-                        ])
+            steps {
+                publishHTML([
+                    target: [
+                        reportDir: 'Chapter08/sample1/build/reports/checkstyle',
+                        reportFiles: 'index.html',
+                        reportName: "jacoco checkstyle" 
+                    ]
+                ])
+            }
         }
     }
     post {
