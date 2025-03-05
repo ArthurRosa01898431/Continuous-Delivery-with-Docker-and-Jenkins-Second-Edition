@@ -9,7 +9,7 @@ pipeline {
 
                     if (branchName == 'main') {
                         echo "Running main branch pipeline..."
-                        env.RUN_MAIN = 'true'
+                        env.RUN_MAIN = 'true'  
                     } else if (branchName != 'main') {
                         echo "Running non main branch pipeline..."
                         env.RUN_NON_MAIN = 'true'
