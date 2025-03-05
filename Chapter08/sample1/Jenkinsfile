@@ -1,10 +1,6 @@
 pipeline {
     agent { label 'docker-agent' }
 
-    triggers {
-        pollSCM('* * * * *')
-    } 
-
     stages {
         stage('Check Branch') {
             steps {
@@ -14,9 +10,9 @@ pipeline {
                     if (branchName == 'main') {
                         echo "Running main branch pipeline..."
                         env.RUN_MAIN = 'true'
-                    } else if (branchName.contains('feature')) {
-                        echo "Running feature branch pipeline..."
-                        env.RUN_FEATURE = 'true'
+                    } else if (branchName != 'main') {
+                        echo "Running non main branch pipeline..."
+                        env.RUN_NON_MAIN = 'true'
                     } else {
                         error("Pipeline failed: Branch does not meet execution criteria.")
                     }
@@ -24,7 +20,7 @@ pipeline {
             }
         }
 
-        stage('Run tests and generate reports') {
+        stage('Code coverage') {
             when {
                 expression { env.RUN_MAIN == 'true' } 
             }
@@ -35,32 +31,76 @@ pipeline {
                 ./gradlew jacocoTestReport
                 ./gradlew jacocoTestCoverageVerification
                 """
-                publishHTML([
-                    target: [
-                        reportDir: 'Chapter08/sample1/build/reports/checkstyle',
-                        reportFiles: 'index.html',
-                        reportName: "jacoco checkstyle" 
-                    ]
-                ])
             }
         }
 
-        stage('Everything else') {
+        stage('Compile') {
             when {
-                expression { env.RUN_FEATURE == 'true' }
+                expression { env.RUN_NON_MAIN  == 'true' }
             }
             steps {
-                echo 'Running everything else...'
+                    sh """
+                    cd Chapter08/sample1
+                    chmod +x gradlew
+                    ./gradlew compileJava
+                    """
+               }
+        }
+
+        stage('Unit test') {
+            when {
+                expression { env.RUN_NON_MAIN  == 'true' }
             }
+            steps {
+                    sh """
+                    cd Chapter08/sample1
+                    chmod +x gradlew
+                    ./gradlew test
+                    """
+               }
+        }
+        
+        stage('Static code analysis') {
+            when {
+                expression { env.RUN_NON_MAIN  == 'true' }
+            }
+            steps {
+                    sh """
+                    cd Chapter08/sample1
+                    chmod +x gradlew
+                    ./gradlew checkstyleMain
+                    """
+               }
+        }
+
+        stage('Package') {
+            when {
+                expression { env.RUN_NON_MAIN  == 'true' }
+            }
+            steps {
+                    sh """
+                    cd Chapter08/sample1
+                    chmod +x gradlew
+                    ./gradlew build
+                    """
+               }
         }
     }
-
     post {
         success {
             echo 'The pipeline ran successfully!'
         }
         failure {
             echo 'The pipeline failed.'
+        }
+        always {
+            publishHTML([
+                target: [
+                    reportDir: 'Chapter08/sample1/build/reports/checkstyle',
+                    reportFiles: 'index.html',
+                    reportName: "jacoco checkstyle"
+                ]
+            ])
         }
     }
 }
