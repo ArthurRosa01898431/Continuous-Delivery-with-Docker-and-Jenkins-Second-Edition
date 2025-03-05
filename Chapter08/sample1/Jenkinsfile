@@ -1,10 +1,6 @@
 pipeline {
     agent { label 'docker-agent' }
 
-    triggers {
-        githubPush()
-    }
-
     stages {
         stage('Check Branch') {
             steps {
