@@ -20,7 +20,7 @@ pipeline {
             }
         }
 
-        stage('Run tests and generate reports') {
+        stage('Code coverage') {
             when {
                 expression { env.RUN_MAIN == 'true' } 
             }
