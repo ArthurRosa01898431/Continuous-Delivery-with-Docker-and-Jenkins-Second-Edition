@@ -2,8 +2,8 @@ pipeline {
     agent { label 'docker-agent' }
 
     triggers {
-        pollSCM('* * * * *')
-    } 
+        githubPush()
+    }
 
     stages {
         stage('Check Branch') {
