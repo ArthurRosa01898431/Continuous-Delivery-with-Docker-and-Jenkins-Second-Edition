@@ -85,18 +85,6 @@ pipeline {
                     """
                }
         }
-    
-        stage('jacoco report') {
-            steps {
-                publishHTML([
-                    target: [
-                        reportDir: 'Chapter08/sample1/build/reports/checkstyle',
-                        reportFiles: 'index.html',
-                        reportName: "jacoco checkstyle" 
-                    ]
-                ])
-            }
-        }
     }
     post {
         success {
