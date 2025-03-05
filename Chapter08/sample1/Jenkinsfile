@@ -39,7 +39,11 @@ pipeline {
                 expression { env.RUN_NON_MAIN  == 'true' }
             }
             steps {
-                    sh "./gradlew compileJava"
+                    sh """
+                    cd Chapter08/sample1
+                    chmod +x gradlew
+                    ./gradlew compileJava
+                    """
                }
         }
 
@@ -48,7 +52,11 @@ pipeline {
                 expression { env.RUN_NON_MAIN  == 'true' }
             }
             steps {
-                    sh "./gradlew test"
+                    sh """
+                    cd Chapter08/sample1
+                    chmod +x gradlew
+                    ./gradlew test
+                    """
                }
         }
         
@@ -57,7 +65,11 @@ pipeline {
                 expression { env.RUN_NON_MAIN  == 'true' }
             }
             steps {
-                    sh "./gradlew checkstyleMain"
+                    sh """
+                    cd Chapter08/sample1
+                    chmod +x gradlew
+                    ./gradlew checkstyleMain
+                    """
                }
         }
 
@@ -66,7 +78,11 @@ pipeline {
                 expression { env.RUN_NON_MAIN  == 'true' }
             }
             steps {
-                    sh "./gradlew build"
+                    sh """
+                    cd Chapter08/sample1
+                    chmod +x gradlew
+                    ./gradlew build
+                    """
                }
         }
     
