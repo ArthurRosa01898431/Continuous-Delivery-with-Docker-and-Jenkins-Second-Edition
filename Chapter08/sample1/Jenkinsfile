@@ -16,7 +16,7 @@ pipeline {
                         env.RUN_MAIN = 'true'
                     } else if (branchName != 'main') {
                         echo "Running non main branch pipeline..."
-                        env.RUN_NON-MAIN = 'true'
+                        env.RUN_NON_MAIN = 'true'
                     } else {
                         error("Pipeline failed: Branch does not meet execution criteria.")
                     }
@@ -40,7 +40,7 @@ pipeline {
 
         stage('Everything else') {
             when {
-                expression { env.RUN_NON-MAIN == 'true' }
+                expression { env.RUN_NON_MAIN  == 'true' }
             }
             steps {
                 echo 'Running everything else...'
