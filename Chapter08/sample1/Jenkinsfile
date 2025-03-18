@@ -11,10 +11,13 @@ pipeline {
                         echo "Running main branch pipeline..."
                         env.RUN_MAIN = 'true'
                     } else if (branchName != 'main') {
-                        echo "Running non main branch pipeline..."
-                        env.RUN_NON_MAIN = 'true'
-                    } else {
-                        error("Pipeline failed: Branch does not meet execution criteria.")
+                        echo "Running Feature branch pipeline..."
+                        env.RUN_FEATURE = 'true'
+                    } 
+
+                    if (branch == 'playground') {
+                        echo "Running playground branch pipeline..."
+                        env.RUN_PLAYGROUND = 'true'
                     }
                 }
             }
@@ -36,7 +39,7 @@ pipeline {
 
         stage('Compile') {
             when {
-                expression { env.RUN_NON_MAIN  == 'true' }
+                expression { env.RUN_FEATURE == 'true' || env.RUN_PLAYGROUND == 'true'}
             }
             steps {
                     sh """
@@ -49,7 +52,7 @@ pipeline {
 
         stage('Unit test') {
             when {
-                expression { env.RUN_NON_MAIN  == 'true' }
+                expression { env.RUN_FEATURE == 'true' || env.RUN_PLAYGROUND == 'true' }
             }
             steps {
                     sh """
@@ -62,7 +65,7 @@ pipeline {
         
         stage('Static code analysis') {
             when {
-                expression { env.RUN_NON_MAIN  == 'true' }
+                expression { env.RUN_FEATURE == 'true' || env.RUN_PLAYGROUND == 'true' }
             }
             steps {
                     sh """
@@ -75,7 +78,7 @@ pipeline {
 
         stage('Package') {
             when {
-                expression { env.RUN_NON_MAIN  == 'true' }
+                expression { env.RUN_FEATURE == 'true' || env.RUN_PLAYGROUND == 'true' }
             }
             steps {
                     sh """
@@ -88,6 +91,9 @@ pipeline {
     }
     post {
         success {
+            if (env.RUN_PLAYGROUND == 'false') {
+                // Create container
+            }
             echo 'The pipeline ran successfully!'
         }
         failure {
