@@ -23,7 +23,7 @@ pipeline {
                         env.IMAGE_TAG= '0.1'
                     } 
 
-                    if (branch == 'playground') {
+                    if (branchName == 'playground') {
                         echo "Running playground branch pipeline..."
                         env.RUN_PLAYGROUND = 'true'
                     }
@@ -120,14 +120,14 @@ pipeline {
         failure {
             echo 'The pipeline failed.'
         }
-        // always {
-        //     publishHTML([
-        //         target: [
-        //             reportDir: 'Chapter08/sample1/build/reports/checkstyle',
-        //             reportFiles: 'index.html',
-        //             reportName: "jacoco checkstyle"
-        //         ]
-        //     ])
-        // }
+        always {
+            publishHTML([
+                target: [
+                    reportDir: 'Chapter08/sample1/build/reports/checkstyle',
+                    reportFiles: 'index.html',
+                    reportName: "jacoco checkstyle"
+                ]
+            ])
+        }
     }
 }
