@@ -111,7 +111,7 @@ pipeline {
     post {
         success {
             script {
-            if (env.RUN_PLAYGROUND == 'false') {
+            if ('false' == 'false') {
                 sh "docker run -d --name my-running-app-${IMAGE_TAG} ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
             }
             echo 'The pipeline ran successfully!'
@@ -120,14 +120,14 @@ pipeline {
         failure {
             echo 'The pipeline failed.'
         }
-        always {
-            publishHTML([
-                target: [
-                    reportDir: 'Chapter08/sample1/build/reports/checkstyle',
-                    reportFiles: 'index.html',
-                    reportName: "jacoco checkstyle"
-                ]
-            ])
-        }
+        // always {
+        //     publishHTML([
+        //         target: [
+        //             reportDir: 'Chapter08/sample1/build/reports/checkstyle',
+        //             reportFiles: 'index.html',
+        //             reportName: "jacoco checkstyle"
+        //         ]
+        //     ])
+        // }
     }
 }
