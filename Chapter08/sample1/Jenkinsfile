@@ -110,16 +110,11 @@ pipeline {
     }
     post {
         success {
-
-            stages {
-        stage('Example') {
-            steps {
+            script {
             if (env.RUN_PLAYGROUND == 'false') {
                 sh "docker run -d --name my-running-app-${IMAGE_TAG} ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
             }
             echo 'The pipeline ran successfully!'
-            }
-        }
             }
         }
         failure {
