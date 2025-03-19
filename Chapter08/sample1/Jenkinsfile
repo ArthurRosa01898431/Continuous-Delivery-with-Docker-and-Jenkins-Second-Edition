@@ -1,6 +1,10 @@
 pipeline {
     agent { label 'docker-agent' }
 
+    environment {
+        REGISTRY = "registry:5000"
+    }
+
     stages {
         stage('Check Branch') {
             steps {
@@ -10,9 +14,13 @@ pipeline {
                     if (branchName == 'main') {
                         echo "Running main branch pipeline..."
                         env.RUN_MAIN = 'true'
-                    } else if (branchName != 'main') {
+                        env.IMAGE_NAME = 'calculator'
+                        env.IMAGE_TAG= '1.0'
+                    } else if (branchName == 'feature') {
                         echo "Running Feature branch pipeline..."
                         env.RUN_FEATURE = 'true'
+                        env.IMAGE_NAME = 'calculator-feature'
+                        env.IMAGE_TAG= '0.1'
                     } 
 
                     if (branch == 'playground') {
@@ -88,11 +96,22 @@ pipeline {
                     """
                }
         }
+
+        stage('Build Image') {
+            steps {
+                sh "docker build -t ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} ."
+            }
+        }
+        stage('Push Image') {
+            steps {
+                sh "docker push ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
+            }
+        }
     }
     post {
         success {
             if (env.RUN_PLAYGROUND == 'false') {
-                // Create container
+                sh "docker run -d --name my-running-app-${IMAGE_TAG} ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
             }
             echo 'The pipeline ran successfully!'
         }
