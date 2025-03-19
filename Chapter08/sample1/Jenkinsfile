@@ -2,7 +2,7 @@ pipeline {
     agent { label 'docker-agent' }
 
     environment {
-        REGISTRY = "registry:5000"
+        REGISTRY = "localhost:5000"
     }
 
     stages {
