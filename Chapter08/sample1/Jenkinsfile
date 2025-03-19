@@ -101,7 +101,8 @@ pipeline {
             steps {
                 sh """ 
                 cd Chapter08/sample1
-                docker build -t ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} .
+                systemctl start docker
+                docker build -t ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} ./Dockerfile
                 """
             }
         }
