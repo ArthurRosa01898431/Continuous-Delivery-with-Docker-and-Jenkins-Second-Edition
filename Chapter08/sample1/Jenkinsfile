@@ -101,11 +101,19 @@ pipeline {
             steps {
                 sh """ 
                 cd Chapter08/sample1
-                systemctl start docker
-                docker build -t ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} ./Dockerfile
+                docker build -t ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} .
                 """
             }
         }
+
+        stage("Docker login") {
+               steps {
+                    withCredentials([usernamePassword(credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                         sh "docker login ${REGISTRY} --username $USERNAME --password $PASSWORD"
+                    }
+               }
+          }
+
         stage('Push Image') {
             steps {
                 sh "docker push ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
