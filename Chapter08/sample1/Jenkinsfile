@@ -13,7 +13,7 @@ pipeline {
                 script {
                     def branchName = env.BRANCH_NAME
 
-                    if (branchName == 'main') {
+                    if (branchName == 'main1') {
                         echo "Running main branch pipeline..."
                         env.RUN_MAIN = 'true'
                         env.RUN_PLAYGROUND = 'false'
