@@ -1,5 +1,7 @@
 pipeline {
-    agent { label 'docker-agent' }
+    // agent { label 'docker-agent' }
+
+    agent any
 
     environment {
         REGISTRY = "localhost:5001"
