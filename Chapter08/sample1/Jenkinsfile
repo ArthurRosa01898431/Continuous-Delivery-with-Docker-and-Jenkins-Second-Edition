@@ -33,58 +33,58 @@ pipeline {
             }
         }
 
-        // stage('Code coverage') {
-        //     when {
-        //         expression { env.RUN_MAIN == 'true' } 
-        //     }
-        //     steps {
-        //         sh """
-        //         cd Chapter08/sample1
-        //         chmod +x gradlew
-        //         ./gradlew jacocoTestReport
-        //         ./gradlew jacocoTestCoverageVerification
-        //         """
-        //     }
-        // }
+        stage('Code coverage') {
+            when {
+                expression { env.RUN_MAIN == 'true' } 
+            }
+            steps {
+                sh """
+                cd Chapter08/sample1
+                chmod +x gradlew
+                ./gradlew jacocoTestReport
+                ./gradlew jacocoTestCoverageVerification
+                """
+            }
+        }
 
-        // stage('Compile') {
-        //     when {
-        //         expression { env.RUN_FEATURE == 'true' || env.RUN_PLAYGROUND == 'true'}
-        //     }
-        //     steps {
-        //             sh """
-        //             cd Chapter08/sample1
-        //             chmod +x gradlew
-        //             ./gradlew compileJava
-        //             """
-        //        }
-        // }
+        stage('Compile') {
+            when {
+                expression { env.RUN_FEATURE == 'true' || env.RUN_PLAYGROUND == 'true'}
+            }
+            steps {
+                    sh """
+                    cd Chapter08/sample1
+                    chmod +x gradlew
+                    ./gradlew compileJava
+                    """
+               }
+        }
 
-        // stage('Unit test') {
-        //     when {
-        //         expression { env.RUN_FEATURE == 'true' || env.RUN_PLAYGROUND == 'true' }
-        //     }
-        //     steps {
-        //             sh """
-        //             cd Chapter08/sample1
-        //             chmod +x gradlew
-        //             ./gradlew test
-        //             """
-        //        }
-        // }
+        stage('Unit test') {
+            when {
+                expression { env.RUN_FEATURE == 'true' || env.RUN_PLAYGROUND == 'true' }
+            }
+            steps {
+                    sh """
+                    cd Chapter08/sample1
+                    chmod +x gradlew
+                    ./gradlew test
+                    """
+               }
+        }
         
-        // stage('Static code analysis') {
-        //     when {
-        //         expression { env.RUN_FEATURE == 'true' || env.RUN_PLAYGROUND == 'true' }
-        //     }
-        //     steps {
-        //             sh """
-        //             cd Chapter08/sample1
-        //             chmod +x gradlew
-        //             ./gradlew checkstyleMain
-        //             """
-        //        }
-        // }
+        stage('Static code analysis') {
+            when {
+                expression { env.RUN_FEATURE == 'true' || env.RUN_PLAYGROUND == 'true' }
+            }
+            steps {
+                    sh """
+                    cd Chapter08/sample1
+                    chmod +x gradlew
+                    ./gradlew checkstyleMain
+                    """
+               }
+        }
 
         stage('Package') {
             when {
@@ -125,10 +125,11 @@ pipeline {
     post {
         success {
             script {
-            if (env.RUN_PLAYGROUND == 'false') {
-                sh "docker run -d --name my-running-app-${IMAGE_TAG} ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
-            }
-            echo 'The pipeline ran successfully!'
+                if (env.RUN_PLAYGROUND == 'false') {
+                    echo 'Running container'
+                    sh "docker run -d --name my-running-app-${IMAGE_TAG} ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
+                }
+                echo 'The pipeline ran successfully!'
             }
         }
         failure {
