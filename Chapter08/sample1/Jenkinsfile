@@ -50,9 +50,6 @@ pipeline {
         }
 
         stage('Compile') {
-            when {
-                expression { env.RUN_FEATURE == 'true' || env.RUN_PLAYGROUND == 'true'}
-            }
             steps {
                     sh """
                     cd Chapter08/sample1
@@ -63,9 +60,6 @@ pipeline {
         }
 
         stage('Unit test') {
-            when {
-                expression { env.RUN_FEATURE == 'true' || env.RUN_PLAYGROUND == 'true' }
-            }
             steps {
                     sh """
                     cd Chapter08/sample1
@@ -76,9 +70,6 @@ pipeline {
         }
         
         stage('Static code analysis') {
-            when {
-                expression { env.RUN_FEATURE == 'true' || env.RUN_PLAYGROUND == 'true' }
-            }
             steps {
                     sh """
                     cd Chapter08/sample1
@@ -89,9 +80,6 @@ pipeline {
         }
 
         stage('Package') {
-            when {
-                expression { env.RUN_FEATURE == 'true' || env.RUN_PLAYGROUND == 'true' }
-            }
             steps {
                     sh """
                     cd Chapter08/sample1
