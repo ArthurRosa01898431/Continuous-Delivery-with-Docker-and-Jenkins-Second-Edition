@@ -2,11 +2,7 @@ package com.leszko.calculator;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-/**
- * The {@code Calculator} class provides basic arithmetic operations.
- * This class includes a method for summing two integers and utilizes caching 
- * to improve performance.
- */
+
 @Service
 public class Calculator {
         final static int umlNUMBER1 = 3;
