@@ -16,11 +16,13 @@ pipeline {
                     if (branchName == 'main') {
                         echo "Running main branch pipeline..."
                         env.RUN_MAIN = 'true'
+                        env.RUN_PLAYGROUND = 'false'
                         env.IMAGE_NAME = 'calculator'
                         env.IMAGE_TAG= '1.0'
                     } else if (branchName == 'feature') {
                         echo "Running Feature branch pipeline..."
                         env.RUN_FEATURE = 'true'
+                        env.RUN_PLAYGROUND = 'false'
                         env.IMAGE_NAME = 'calculator-feature'
                         env.IMAGE_TAG= '0.1'
                     } 
