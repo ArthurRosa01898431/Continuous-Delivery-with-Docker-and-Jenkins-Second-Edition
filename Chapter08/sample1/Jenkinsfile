@@ -59,15 +59,15 @@ pipeline {
             steps {
                 sh """
                 echo "Testing Correct Division"
-                result=$(curl -s "http://localhost:8080/div?a=6&b=1")
-                if [ "\$result" -eq 6 ]; then
+                result="$(curl -s "http://localhost:8080/div?a=6&b=1")"
+                if [ "$result" -eq 6 ]; then
                     echo 'pass'
                 else
                     echo 'fail'
                 fi
 
                 echo "Testing Incorrect Division"
-                result=$(curl -s "http://localhost:8080/div?a=6&b=2")
+                result="$(curl -s "http://localhost:8080/div?a=6&b=2")"
                 if [ "$result" -eq 3 ]; then
                     echo 'pass'
                 else
@@ -75,7 +75,7 @@ pipeline {
                 fi
 
                 echo "Testing Divide by 0"
-                result=$(curl -s "http://localhost:8080/div?a=6&b=0")
+                result="$(curl -s "http://localhost:8080/div?a=6&b=0")"
                 if [[ "$result" == "Division by 0" ]]; then
                     echo "pass"
                 else
