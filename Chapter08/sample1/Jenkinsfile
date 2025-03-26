@@ -57,7 +57,7 @@ pipeline {
 
         stage('Test Calculator') {
             steps {
-                sh """
+                bash """
                 echo "Testing Correct Division"
                 read result < <(curl -s "http://localhost:8080/div?a=6&b=1")
                 if [ "$result" -eq 6 ]; then
