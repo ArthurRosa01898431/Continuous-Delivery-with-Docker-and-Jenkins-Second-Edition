@@ -19,7 +19,7 @@ pipeline {
                         env.RUN_PLAYGROUND = 'false'
                         env.IMAGE_NAME = 'calculator'
                         env.IMAGE_TAG= '1.0'
-                    } else if (branchName == 'feature') {
+                    } else if (branchName == 'Exercise9') {
                         echo "Running Feature branch pipeline..."
                         env.RUN_FEATURE = 'true'
                         env.RUN_PLAYGROUND = 'false'
