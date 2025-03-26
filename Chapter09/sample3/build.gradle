@@ -63,6 +63,6 @@ test {
 }
 
 flyway {
-	url = 'jdbc:h2:file:/tmp/calculator'
+	url = 'jdbc:h2:file:~/tmp/calculator'
 	user = 'sa'
 }
