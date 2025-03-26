@@ -129,23 +129,23 @@ pipeline {
         // }
     }
     post {
-        success {
-            script {
-            //     if (env.RUN_PLAYGROUND == 'false') {
-            //         echo 'Running container'
-            //         sh """ 
-            //         cd Chapter08/sample1
-            //         docker build -t ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} .
-            //         """
-            //         withCredentials([usernamePassword(credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-            //             sh "docker login ${REGISTRY} --username $USERNAME --password $PASSWORD"
-            //         }
-            //         sh "docker push ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
+        // success {
+        //     script {
+        //     //     if (env.RUN_PLAYGROUND == 'false') {
+        //     //         echo 'Running container'
+        //     //         sh """ 
+        //     //         cd Chapter08/sample1
+        //     //         docker build -t ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} .
+        //     //         """
+        //     //         withCredentials([usernamePassword(credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+        //     //             sh "docker login ${REGISTRY} --username $USERNAME --password $PASSWORD"
+        //     //         }
+        //     //         sh "docker push ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
                     
-            //     }
-                echo 'The pipeline ran successfully!'
-            }
-        }
+        //     //     }
+        //         echo 'The pipeline ran successfully!'
+        //     }
+        // }
         failure {
             echo 'The pipeline failed.'
         }
