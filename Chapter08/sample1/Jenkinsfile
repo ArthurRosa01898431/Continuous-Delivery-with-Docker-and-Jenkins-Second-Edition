@@ -149,14 +149,16 @@ pipeline {
         failure {
             echo 'The pipeline failed.'
         }
-        // always {
-        //     publishHTML([
-        //         target: [
-        //             reportDir: 'Chapter08/sample1/build/reports/checkstyle',
-        //             reportFiles: 'index.html',
-        //             reportName: "jacoco checkstyle"
-        //         ]
-        //     ])
-        // }
+        always {
+           script {
+
+            sh """
+            docker stop calculator
+            docker rm calculator
+
+            """
+
+           }
+        }
     }
 }
