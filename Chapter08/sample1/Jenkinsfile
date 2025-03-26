@@ -49,6 +49,34 @@ pipeline {
             }
         }
 
+        stage('Start Calculator') {
+            steps {
+                sh "docker run -d --name calculator -p 8080:8080   --network jenkins-network   localhost:5001/calculator-feature:0.1"
+            }
+        }
+
+        stage('Test Calculator') {
+            steps {
+                sh """
+                echo "Testing Correct Division"
+                test $(curl -s "http://localhost:8080/div?a=6&b=1") -eq 6 && echo 'pass' || echo 'fail'
+
+                echo "Testing Incorrect Division"
+                test $(curl -s "http://localhost:8080/div?a=6&b=1") -eq 3 && echo 'pass' || echo 'fail'
+
+                echo "Testing Divide by 0"
+                result=$(curl -s "http://localhost:8080/div?a=6&b=0")
+                    if [[ "$result" == "Division by 0" ]]; then
+                        echo "pass"
+                    else
+                        echo "fail"
+                    fi
+
+                """
+            }
+        }
+        
+
         // stage('Compile') {
         //     steps {
         //             sh """
@@ -79,35 +107,35 @@ pipeline {
         //        }
         // }
 
-        stage('Package') {
-            steps {
-                    sh """
-                    cd Chapter08/sample1
-                    chmod +x gradlew
-                    ./gradlew build
+        // stage('Package') {
+        //     steps {
+        //             sh """
+        //             cd Chapter08/sample1
+        //             chmod +x gradlew
+        //             ./gradlew build
                 
 
-                    """
-               }
-        }
+        //             """
+        //        }
+        // }
     }
     post {
         success {
-            script {
-                if (env.RUN_PLAYGROUND == 'false') {
-                    echo 'Running container'
-                    sh """ 
-                    cd Chapter08/sample1
-                    docker build -t ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} .
-                    """
-                    withCredentials([usernamePassword(credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        sh "docker login ${REGISTRY} --username $USERNAME --password $PASSWORD"
-                    }
-                    sh "docker push ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
+            // script {
+            //     if (env.RUN_PLAYGROUND == 'false') {
+            //         echo 'Running container'
+            //         sh """ 
+            //         cd Chapter08/sample1
+            //         docker build -t ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} .
+            //         """
+            //         withCredentials([usernamePassword(credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+            //             sh "docker login ${REGISTRY} --username $USERNAME --password $PASSWORD"
+            //         }
+            //         sh "docker push ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
                     
-                }
-                echo 'The pipeline ran successfully!'
-            }
+            //     }
+            //     echo 'The pipeline ran successfully!'
+            // }
         }
         failure {
             echo 'The pipeline failed.'
