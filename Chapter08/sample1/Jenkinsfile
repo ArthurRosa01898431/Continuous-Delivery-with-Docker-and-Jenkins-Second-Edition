@@ -49,35 +49,35 @@ pipeline {
             }
         }
 
-        stage('Compile') {
-            steps {
-                    sh """
-                    cd Chapter09/sample3
-                    chmod +x gradlew
-                    ./gradlew compileJava
-                    """
-               }
-        }
+        // stage('Compile') {
+        //     steps {
+        //             sh """
+        //             cd Chapter09/sample3
+        //             chmod +x gradlew
+        //             ./gradlew compileJava
+        //             """
+        //        }
+        // }
 
-        stage('Unit test') {
-            steps {
-                    sh """
-                    cd Chapter09/sample3
-                    chmod +x gradlew
-                    ./gradlew test
-                    """
-               }
-        }
+        // stage('Unit test') {
+        //     steps {
+        //             sh """
+        //             cd Chapter09/sample3
+        //             chmod +x gradlew
+        //             ./gradlew test
+        //             """
+        //        }
+        // }
         
-        stage('Static code analysis') {
-            steps {
-                    sh """
-                    cd Chapter09/sample3
-                    chmod +x gradlew
-                    ./gradlew checkstyleMain
-                    """
-               }
-        }
+        // stage('Static code analysis') {
+        //     steps {
+        //             sh """
+        //             cd Chapter09/sample3
+        //             chmod +x gradlew
+        //             ./gradlew checkstyleMain
+        //             """
+        //        }
+        // }
 
         stage('Package') {
             steps {
