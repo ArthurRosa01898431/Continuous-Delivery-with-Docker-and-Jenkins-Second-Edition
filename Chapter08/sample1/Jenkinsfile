@@ -41,7 +41,7 @@ pipeline {
             }
             steps {
                 sh """
-                cd Chapter08/sample1
+                cd Chapter09/sample3
                 chmod +x gradlew
                 ./gradlew jacocoTestReport
                 ./gradlew jacocoTestCoverageVerification
@@ -52,7 +52,7 @@ pipeline {
         stage('Compile') {
             steps {
                     sh """
-                    cd Chapter08/sample1
+                    cd Chapter09/sample3
                     chmod +x gradlew
                     ./gradlew compileJava
                     """
@@ -62,7 +62,7 @@ pipeline {
         stage('Unit test') {
             steps {
                     sh """
-                    cd Chapter08/sample1
+                    cd Chapter09/sample3
                     chmod +x gradlew
                     ./gradlew test
                     """
@@ -72,7 +72,7 @@ pipeline {
         stage('Static code analysis') {
             steps {
                     sh """
-                    cd Chapter08/sample1
+                    cd Chapter09/sample3
                     chmod +x gradlew
                     ./gradlew checkstyleMain
                     """
@@ -82,7 +82,7 @@ pipeline {
         stage('Package') {
             steps {
                     sh """
-                    cd Chapter08/sample1
+                    cd Chapter09/sample3
                     chmod +x gradlew
                     ./gradlew build
                     """
@@ -95,7 +95,7 @@ pipeline {
                 if (env.RUN_PLAYGROUND == 'false') {
                     echo 'Running container'
                     sh """ 
-                    cd Chapter08/sample1
+                    cd Chapter09/sample3
                     docker build -t ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} .
                     """
                     withCredentials([usernamePassword(credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
@@ -110,14 +110,14 @@ pipeline {
         failure {
             echo 'The pipeline failed.'
         }
-        always {
-            publishHTML([
-                target: [
-                    reportDir: 'Chapter08/sample1/build/reports/checkstyle',
-                    reportFiles: 'index.html',
-                    reportName: "jacoco checkstyle"
-                ]
-            ])
-        }
+        // always {
+        //     publishHTML([
+        //         target: [
+        //             reportDir: 'Chapter08/sample1/build/reports/checkstyle',
+        //             reportFiles: 'index.html',
+        //             reportName: "jacoco checkstyle"
+        //         ]
+        //     ])
+        // }
     }
 }
