@@ -130,7 +130,7 @@ pipeline {
     }
     post {
         success {
-            // script {
+            script {
             //     if (env.RUN_PLAYGROUND == 'false') {
             //         echo 'Running container'
             //         sh """ 
@@ -143,8 +143,8 @@ pipeline {
             //         sh "docker push ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
                     
             //     }
-            //     echo 'The pipeline ran successfully!'
-            // }
+                echo 'The pipeline ran successfully!'
+            }
         }
         failure {
             echo 'The pipeline failed.'
