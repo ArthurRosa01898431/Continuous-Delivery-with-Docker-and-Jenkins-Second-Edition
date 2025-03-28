@@ -49,19 +49,19 @@ pipeline {
     //         }
     //     }
 
-        stage('Start Containers') {
-            steps {
-                sh "echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | tee /etc/sudoers.d/jenkins"
-                sh "docker run -d --name hazelcast hazelcast/hazelcast:3.12"
-                sh "docker run -d --name calculator -p 8080:8080 localhost:5001/calculator-feature:0.1"
-            }
-        }
+        // stage('Start Containers') {
+        //     steps {
+        //         sh "echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | tee /etc/sudoers.d/jenkins"
+        //         sh "docker run -d --name hazelcast hazelcast/hazelcast:3.12"
+        //         sh "docker run -d --name calculatorTest -p 8082:8082 localhost:5001/calculator-feature:0.1"
+        //     }
+        // }
 
         stage('Test Calculator') {
             steps {
                 sh '''
                 echo "Testing Correct Division"
-                result=$(curl -s "http://localhost:8080/div?a=6&b=1")
+                result=$(curl -s -L "http://localhost:8080/div?a=6&b=1")
                 if [ "$result" -eq 6 ]; then
                     echo 'pass'
                 else
@@ -69,7 +69,7 @@ pipeline {
                 fi
 
                 echo "Testing Incorrect Division"
-                result=$(curl -s "http://localhost:8080/div?a=6&b=2")
+                result=$(curl -s -L "http://localhost:8080/div?a=6&b=2")
                 if [ "$result" -eq 3 ]; then
                     echo 'pass'
                 else
