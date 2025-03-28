@@ -5,6 +5,13 @@ pipeline {
     //       label 'docker-agent'
     //  }  
 
+    agent {
+        docker {
+            image 'gradle:jdk8'
+            args '--network=host'
+        }
+    }
+
     environment {
         REGISTRY = "localhost:5001"
     }
