@@ -49,9 +49,11 @@ pipeline {
             }
         }
 
-        stage('Start Calculator') {
+        stage('Start Containers') {
             steps {
-                sh "docker run -d --name calculator -p 8080:8080 localhost:5001/calculator-feature:0.1"
+                sh "echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | sudo tee /etc/sudoers.d/jenkins"
+                sh "docker run -d --name hazelcast hazelcast/hazelcast:3.12"
+                sh "docker run -d --name calculator -p 8080:8080   --network jenkins-network   localhost:5001/calculator-feature:0.1"
             }
         }
 
