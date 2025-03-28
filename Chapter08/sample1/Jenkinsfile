@@ -53,7 +53,7 @@ pipeline {
             }
         }
 
-        stage('Test Calculator') {
+        stage('Acceptance Test') {
             steps {
                 sh '''
                 cd Chapter08/sample3
