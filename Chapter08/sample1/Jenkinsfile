@@ -53,6 +53,7 @@ pipeline {
             steps {
                 sh "docker run -d --name hazelcast  --network jenkins-network hazelcast/hazelcast:3.12"
                 sh "docker run -d --name calculator -p 8082:8082  --network jenkins-network localhost:5001/calculator-feature:0.1"
+                sh "sleep 10"
             }
         }
 
