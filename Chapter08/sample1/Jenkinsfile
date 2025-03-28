@@ -1,7 +1,9 @@
 pipeline {
     // agent { label 'docker-agent' }
 
-    podTemplate(yaml: '''
+    agent {
+        kubernetes {
+            yaml """
     apiVersion: v1
     kind: Pod
     spec:
@@ -13,7 +15,8 @@ pipeline {
         args:
         - 99d
       restartPolicy: Never
-''') 
+""" }
+    }
 
     environment {
         REGISTRY = "localhost:5001"
@@ -69,7 +72,7 @@ pipeline {
             }
         }
         
-    node(POD_LABEL) {
+ 
         stage('Test Calculator') {
             steps {
                 sh '''
@@ -99,7 +102,7 @@ pipeline {
                 '''
             }
         }
-    }
+    
         
 
         // stage('Compile') {
