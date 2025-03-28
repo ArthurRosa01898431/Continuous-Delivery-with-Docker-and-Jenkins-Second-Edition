@@ -51,7 +51,6 @@ pipeline {
 
         stage('Start Containers') {
             steps {
-                sh "echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | tee /etc/sudoers.d/jenkins"
                 sh "docker run -d --name hazelcast hazelcast/hazelcast:3.12"
                 sh "docker run -d --name calculator -p 8082:8082 localhost:5001/calculator-feature:0.1"
             }
