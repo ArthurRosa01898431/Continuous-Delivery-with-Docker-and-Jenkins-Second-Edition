@@ -59,7 +59,6 @@ pipeline {
         stage('Test Calculator') {
             steps {
                 sh '''
-                // test $(curl calculator-service:8080/sum?a=1\\&b=2) -eq 3
                 
                 echo "Testing Correct Division"
                 result=$(curl --insecure "http://localhost:8082/div?a=6&b=1")
@@ -152,16 +151,16 @@ pipeline {
         failure {
             echo 'The pipeline failed.'
         }
-        // always {
-        //    script {
+        always {
+           script {
 
-        //     sh """
-        //     docker stop calculator hazelcast
-        //     docker rm calculator hazelcast
+            sh """
+            docker stop calculator hazelcast
+            docker rm calculator hazelcast
 
-        //     """
+            """
 
-        //    }
-        // }
+           }
+        }
     }
 }
