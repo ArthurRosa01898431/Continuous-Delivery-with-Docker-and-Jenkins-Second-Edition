@@ -3,7 +3,6 @@ pipeline {
 
     // agent {
     //       label 'docker-agent'
-    args '--network=host'
     //  }  
 
     agent {
