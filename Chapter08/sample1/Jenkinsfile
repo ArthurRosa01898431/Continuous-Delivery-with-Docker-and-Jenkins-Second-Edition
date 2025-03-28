@@ -7,7 +7,7 @@ pipeline {
         REGISTRY = "localhost:5001"
     }
 
-    // stages {
+    stages {
     //     stage('Check Branch') {
     //         steps {
     //             script {
@@ -129,7 +129,7 @@ pipeline {
         //             """
         //        }
         // }
-    // }
+    }
     post {
         // success {
         //     script {
