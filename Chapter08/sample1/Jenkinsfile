@@ -3,11 +3,12 @@ pipeline {
 
     // agent {
     //       label 'docker-agent'
+    args '--network=host'
     //  }  
 
     agent {
         docker {
-            image 'docker'
+            image 'curl'
             args '--network=host'
         }
     }
