@@ -64,7 +64,7 @@ pipeline {
                 sh '''
                 
                 echo "Testing Correct Division"
-                result=$(curl --basic "localhost:8080/div?a=6&b=1")
+                result=$(curl "localhost:8080/div?a=6&b=1")
                 if [ "$result" -eq 6 ]; then
                     echo 'pass'
                 else
