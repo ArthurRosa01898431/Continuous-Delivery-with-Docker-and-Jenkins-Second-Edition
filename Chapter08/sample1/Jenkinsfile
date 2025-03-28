@@ -51,8 +51,8 @@ pipeline {
 
         stage('Start Containers') {
             steps {
-                sh "docker run -d --name hazelcast hazelcast/hazelcast:3.12"
-                sh "docker run -d --name calculator -p 8082:8082 localhost:5001/calculator-feature:0.1"
+                sh "docker run -d --name hazelcast  --network jenkins-network hazelcast/hazelcast:3.12"
+                sh "docker run -d --name calculator -p 8082:8082  --network jenkins-network localhost:5001/calculator-feature:0.1"
             }
         }
 
