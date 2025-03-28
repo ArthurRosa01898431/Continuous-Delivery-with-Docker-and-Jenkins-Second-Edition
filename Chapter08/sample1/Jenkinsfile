@@ -155,8 +155,8 @@ pipeline {
            script {
 
             sh """
-            docker stop calculator
-            docker rm calculator
+            docker stop calculator hazelcast
+            docker rm calculator hazelcast
 
             """
 
