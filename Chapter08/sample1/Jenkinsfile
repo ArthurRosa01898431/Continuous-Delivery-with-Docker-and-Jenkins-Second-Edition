@@ -12,59 +12,15 @@ pipeline {
         }
     }
 
-    environment {
-        REGISTRY = "localhost:5001"
-    }
-
     stages {
-    //     stage('Check Branch') {
-    //         steps {
-    //             script {
-    //                 def branchName = env.BRANCH_NAME
 
-    //                 if (branchName == 'main1') {
-    //                     echo "Running main branch pipeline..."
-    //                     env.RUN_MAIN = 'true'
-    //                     env.RUN_PLAYGROUND = 'false'
-    //                     env.IMAGE_NAME = 'calculator'
-    //                     env.IMAGE_TAG= '1.0'
-    //                 } else if (branchName == 'Exercise9') {
-    //                     echo "Running Feature branch pipeline..."
-    //                     env.RUN_FEATURE = 'true'
-    //                     env.RUN_PLAYGROUND = 'false'
-    //                     env.IMAGE_NAME = 'calculator-feature'
-    //                     env.IMAGE_TAG= '0.1'
-    //                 } 
-
-    //                 if (branchName == 'playground') {
-    //                     echo "Running playground branch pipeline..."
-    //                     env.RUN_PLAYGROUND = 'true'
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     stage('Code coverage') {
-    //         when {
-    //             expression { env.RUN_MAIN == 'true' } 
-    //         }
-    //         steps {
-    //             sh """
-    //             cd Chapter08/sample1
-    //             chmod +x gradlew
-    //             ./gradlew jacocoTestReport
-    //             ./gradlew jacocoTestCoverageVerification
-    //             """
-    //         }
-    //     }
-
-        // stage('Start Containers') {
-        //     steps {
-        //         sh "docker run -d --name hazelcast  --network jenkins-network hazelcast/hazelcast:3.12"
-        //         sh "docker run -d --name calculator -p 8082:8082  --network jenkins-network localhost:5001/calculator-feature:0.1"
-        //         sh "sleep 10"
-        //     }
-        // }
+        stage('Start Containers') {
+            steps {
+                sh "docker run -d --name hazelcast  --network jenkins-network hazelcast/hazelcast:3.12"
+                sh "docker run -d --name calculator -p 8082:8082  --network jenkins-network localhost:5001/calculator-feature:0.1"
+                sh "sleep 10"
+            }
+        }
 
         stage('Test Calculator') {
             steps {
@@ -79,7 +35,7 @@ pipeline {
                 fi
 
                 echo "Testing Incorrect Division"
-                result=$(curl --insecure "localhost:8080/div?a=6&b=2")
+                result=$(curl "localhost:8080/div?a=6&b=2")
                 if [ "$result" -eq 3 ]; then
                     echo 'pass'
                 else
@@ -87,7 +43,7 @@ pipeline {
                 fi
 
                 echo "Testing Divide by 0"
-                read result < <(curl --insecure "localhost:8080/div?a=6&b=0")
+                read result=$(curl "localhost:8080/div?a=6&b=0")
                 if [[ "$result" == "Division by 0" ]]; then
                     echo "pass"
                 else
@@ -96,81 +52,21 @@ pipeline {
                 '''
             }
         }
-        
-
-        // stage('Compile') {
-        //     steps {
-        //             sh """
-        //             cd Chapter09/sample3
-        //             chmod +x gradlew
-        //             ./gradlew compileJava
-        //             """
-        //        }
-        // }
-
-        // stage('Unit test') {
-        //     steps {
-        //             sh """
-        //             cd Chapter09/sample3
-        //             chmod +x gradlew
-        //             ./gradlew test
-        //             """
-        //        }
-        // }
-        
-        // stage('Static code analysis') {
-        //     steps {
-        //             sh """
-        //             cd Chapter09/sample3
-        //             chmod +x gradlew
-        //             ./gradlew checkstyleMain
-        //             """
-        //        }
-        // }
-
-        // stage('Package') {
-        //     steps {
-        //             sh """
-        //             cd Chapter08/sample1
-        //             chmod +x gradlew
-        //             ./gradlew build
-                
-
-        //             """
-        //        }
-        // }
     }
     post {
-        // success {
-        //     script {
-        //     //     if (env.RUN_PLAYGROUND == 'false') {
-        //     //         echo 'Running container'
-        //     //         sh """ 
-        //     //         cd Chapter08/sample1
-        //     //         docker build -t ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} .
-        //     //         """
-        //     //         withCredentials([usernamePassword(credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-        //     //             sh "docker login ${REGISTRY} --username $USERNAME --password $PASSWORD"
-        //     //         }
-        //     //         sh "docker push ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
-                    
-        //     //     }
-        //         echo 'The pipeline ran successfully!'
-        //     }
-        // }
         failure {
             echo 'The pipeline failed.'
         }
-        // always {
-        //    script {
+        always {
+           script {
 
-        //     sh """
-        //     docker stop calculator hazelcast
-        //     docker rm calculator hazelcast
+            sh """
+            docker stop calculator hazelcast
+            docker rm calculator hazelcast
 
-        //     """
+            """
 
-        //    }
-        // }
+           }
+        }
     }
 }
