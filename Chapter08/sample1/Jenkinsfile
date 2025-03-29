@@ -49,18 +49,18 @@ pipeline {
             }
         }
 
-        stage('Compile') {
-            when {
-                expression { env.RUN_FEATURE == 'true' || env.RUN_PLAYGROUND == 'true'}
-            }
-            steps {
-                    sh """
-                    cd Chapter08/sample1
-                    chmod +x gradlew
-                    ./gradlew compileJava
-                    """
-               }
-        }
+        // stage('Compile') {
+        //     when {
+        //         expression { env.RUN_FEATURE == 'true' || env.RUN_PLAYGROUND == 'true'}
+        //     }
+        //     steps {
+        //             sh """
+        //             cd Chapter08/sample1
+        //             chmod +x gradlew
+        //             ./gradlew compileJava
+        //             """
+        //        }
+        // }
 
         stage('Package') {
             when {
