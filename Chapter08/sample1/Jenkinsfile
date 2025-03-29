@@ -68,7 +68,7 @@ pipeline {
             }
             steps {
                     sh """
-                    cd Chapter09/sample3
+                    cd Chapter08/sample1
                     chmod +x gradlew
                     ./gradlew build
                     """
@@ -81,7 +81,7 @@ pipeline {
                 if (env.RUN_PLAYGROUND == 'false') {
                     echo 'Running container'
                     sh """ 
-                    cd Chapter09/sample3
+                    cd Chapter08/sample1
                     docker build -t ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} .
                     """
                     withCredentials([usernamePassword(credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
