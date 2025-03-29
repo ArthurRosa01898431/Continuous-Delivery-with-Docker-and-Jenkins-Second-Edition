@@ -7,7 +7,7 @@ pipeline {
 
     agent {
         docker {
-            image 'docker'
+            image 'java:8-jdk-alpine'
             args '--network=host'
         }
     }
