@@ -1,16 +1,13 @@
 pipeline {
     // agent { label 'docker-agent' }
 
-    // agent {
-    //       label 'docker-agent'
-    //  }  
 
-    // agent {
-    //     docker {
-    //         image 'docker'
-    //         args '--network=host'
-    //     }
-    // }
+    agent {
+        docker {
+            image 'docker'
+            args '--network=host'
+        }
+    }
 
     agent {
         docker {
@@ -21,12 +18,12 @@ pipeline {
 
     stages {
 
-        // stage('Start Containers') {
-        //     steps {
-        //         sh "docker run -d --name hazelcast  --network jenkins-network hazelcast/hazelcast:3.12"
-        //         sh "docker run -d --name calculator -p 8080:8080  --network jenkins-network localhost:5001/calculator-feature:0.1"
-        //     }
-        // }
+        stage('Start Containers') {
+            steps {
+                sh "docker run -d --name hazelcast  --network jenkins-network hazelcast/hazelcast:3.12"
+                sh "docker run -d --name calculator -p 8080:8080  --network jenkins-network localhost:5001/calculator-feature:0.1"
+            }
+        }
 
         stage('Test Calculator') {
             steps {
@@ -78,16 +75,16 @@ pipeline {
         failure {
             echo 'The pipeline failed.'
         }
-        // always {
-        //    script {
+        always {
+           script {
 
-        //     sh """
-        //     docker stop calculator hazelcast
-        //     docker rm calculator hazelcast
+            sh """
+            docker stop calculator hazelcast
+            docker rm calculator hazelcast
 
-        //     """
+            """
 
-        //    }
-        // }
+           }
+        }
     }
 }
