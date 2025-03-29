@@ -68,16 +68,16 @@ pipeline {
         failure {
             echo 'The pipeline failed.'
         }
-        always {
-           script {
+        // always {
+        //    script {
 
-            sh """
-            docker stop calculator hazelcast
-            docker rm calculator hazelcast
+        //     sh """
+        //     docker stop calculator hazelcast
+        //     docker rm calculator hazelcast
 
-            """
+        //     """
 
-           }
-        }
+        //    }
+        // }
     }
 }
