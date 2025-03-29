@@ -7,7 +7,7 @@ pipeline {
 
     agent {
         docker {
-            image 'gradle:jdk8'
+            image 'docker'
             args '--network=host'
         }
     }
