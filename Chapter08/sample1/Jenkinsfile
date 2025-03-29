@@ -49,7 +49,11 @@ pipeline {
 
                 echo "Testing Divide by 0"
                 result=$(curl "localhost:8080/div?a=6&b=0")
-                
+                if [ "$result" -eq "Division by 0" ]; then
+                    echo "pass"
+                else
+                    echo "fail"
+                fi
                 '''
             }
         }
@@ -57,7 +61,7 @@ pipeline {
         stage('Acceptance Test') {
             steps {
                 sh '''
-                cd Chapter08/sample3
+                cd Chapter09/sample3
                 chmod +x gradlew
                 ./gradlew acceptanceTest -D calculator.url=http://localhost:8080
                 '''
