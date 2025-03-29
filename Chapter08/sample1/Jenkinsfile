@@ -48,7 +48,7 @@ pipeline {
                 fi
 
                 echo "Testing Divide by 0"
-                read result=$(curl "localhost:8080/div?a=6&b=0")
+                result=$(curl "localhost:8080/div?a=6&b=0")
                 if [ "$result" == "Division by 0" ]; then
                     echo "pass"
                 else
