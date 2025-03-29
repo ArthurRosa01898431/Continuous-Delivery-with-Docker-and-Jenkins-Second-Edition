@@ -1,109 +1,90 @@
 pipeline {
     // agent { label 'docker-agent' }
 
-    agent any
+    // agent {
+    //       label 'docker-agent'
+    //  }  
 
-    environment {
-        REGISTRY = "localhost:5001"
+    // agent {
+    //     docker {
+    //         image 'docker'
+    //         args '--network=host'
+    //     }
+    // }
+
+    agent {
+        docker {
+            image 'gradle:jdk8'
+            args '--network=host'
+        }
     }
 
     stages {
-        stage('Check Branch') {
-            steps {
-                script {
-                    def branchName = env.BRANCH_NAME
 
-                    if (branchName == 'main1') {
-                        echo "Running main branch pipeline..."
-                        env.RUN_MAIN = 'true'
-                        env.RUN_PLAYGROUND = 'false'
-                        env.IMAGE_NAME = 'calculator'
-                        env.IMAGE_TAG= '1.0'
-                    } else if (branchName == 'Exercise9') {
-                        echo "Running Feature branch pipeline..."
-                        env.RUN_FEATURE = 'true'
-                        env.RUN_PLAYGROUND = 'false'
-                        env.IMAGE_NAME = 'calculator-feature'
-                        env.IMAGE_TAG= '0.1'
-                    } 
-
-                    if (branchName == 'playground') {
-                        echo "Running playground branch pipeline..."
-                        env.RUN_PLAYGROUND = 'true'
-                    }
-                }
-            }
-        }
-
-        stage('Code coverage') {
-            when {
-                expression { env.RUN_MAIN == 'true' } 
-            }
-            steps {
-                sh """
-                cd Chapter08/sample1
-                chmod +x gradlew
-                ./gradlew jacocoTestReport
-                ./gradlew jacocoTestCoverageVerification
-                """
-            }
-        }
-
-        // stage('Compile') {
-        //     when {
-        //         expression { env.RUN_FEATURE == 'true' || env.RUN_PLAYGROUND == 'true'}
-        //     }
+        // stage('Start Containers') {
         //     steps {
-        //             sh """
-        //             cd Chapter08/sample1
-        //             chmod +x gradlew
-        //             ./gradlew compileJava
-        //             """
-        //        }
+        //         sh "docker run -d --name hazelcast  --network jenkins-network hazelcast/hazelcast:3.12"
+        //         sh "docker run -d --name calculator -p 8080:8080  --network jenkins-network localhost:5001/calculator-feature:0.1"
+        //     }
         // }
 
-        stage('Package') {
-            when {
-                expression { env.RUN_FEATURE == 'true' || env.RUN_PLAYGROUND == 'true' }
-            }
+        stage('Test Calculator') {
             steps {
-                    sh """
-                    cd Chapter08/sample1
-                    chmod +x gradlew
-                    ./gradlew build
-                    """
-               }
+                sh '''
+                echo "Testing Correct Division"
+                result=$(curl "localhost:8080/div?a=6&b=1")
+                if [ "$result" -eq 6 ]; then
+                    echo 'pass'
+                else
+                    echo 'fail'
+                fi
+
+                echo "Testing Incorrect Division"
+                result=$(curl "localhost:8080/div?a=6&b=2")
+                if [ "$result" -eq 3 ]; then
+                    echo 'pass'
+                else
+                    echo 'fail'
+                fi
+
+                echo "Testing Divide by 0"
+                result=$(curl "localhost:8080/div?a=6&b=0")
+                
+                if [ $result -eq "Division by 0" ]; then
+                    echo "pass"
+                else
+                    echo "fail"
+                fi
+                '''
+            }
+        }
+
+        stage('Acceptance Test') {
+            steps {
+                sh '''
+                cd Chapter09/sample3
+                chmod +x gradlew
+                ./gradlew acceptanceTest -D calculator.url=http://localhost:8080
+                '''
+            }
+
+
         }
     }
     post {
-        success {
-            script {
-                if (env.RUN_PLAYGROUND == 'false') {
-                    echo 'Running container'
-                    sh """ 
-                    cd Chapter08/sample1
-                    docker build -t ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} .
-                    """
-                    withCredentials([usernamePassword(credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        sh "docker login ${REGISTRY} --username $USERNAME --password $PASSWORD"
-                    }
-                    sh "docker push ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
-                    
-                }
-                echo 'The pipeline ran successfully!'
-            }
-        }
         failure {
             echo 'The pipeline failed.'
         }
-        always {
-            publishHTML([
-                target: [
-                    reportDir: 'Chapter08/sample1/build/reports/checkstyle',
-                    reportFiles: 'index.html',
-                    reportName: "jacoco checkstyle"
-                ]
-            ])
-        }
+        // always {
+        //    script {
+
+        //     sh """
+        //     docker stop calculator hazelcast
+        //     docker rm calculator hazelcast
+
+        //     """
+
+        //    }
+        // }
     }
 }
