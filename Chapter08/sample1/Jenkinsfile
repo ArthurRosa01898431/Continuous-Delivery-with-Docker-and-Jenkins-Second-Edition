@@ -1,16 +1,16 @@
 pipeline {
     // agent { label 'docker-agent' }
 
-    agent {
-          label 'docker-agent'
-     }  
-
     // agent {
-    //     docker {
-    //         image 'gradle:jdk8'
-    //         args '--network=host'
-    //     }
-    // }
+    //       label 'docker-agent'
+    //  }  
+
+    agent {
+        docker {
+            image 'dlambrig/week8:1.1'
+            args '--network=host'
+        }
+    }
 
     stages {
 
