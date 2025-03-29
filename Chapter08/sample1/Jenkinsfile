@@ -65,6 +65,8 @@ pipeline {
                 cd Chapter09/sample3
                 chmod +x gradlew
                 ./gradlew acceptanceTest -D calculator.url=http://localhost:8080
+
+                cat build/reports/tests/acceptanceTest/index.html
                 '''
             }
 
