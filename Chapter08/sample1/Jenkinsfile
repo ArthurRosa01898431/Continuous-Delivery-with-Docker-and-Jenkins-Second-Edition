@@ -1,90 +1,19 @@
 pipeline {
-    // agent { label 'docker-agent' }
-
-
-    agent {
-        docker {
-            image 'docker'
-            args '--network=host'
-        }
-    }
-
-    agent {
-        docker {
-            image 'gradle:jdk8'
-            args '--network=host'
-        }
-    }
-
-    stages {
-
-        stage('Start Containers') {
-            steps {
-                sh "docker run -d --name hazelcast  --network jenkins-network hazelcast/hazelcast:3.12"
-                sh "docker run -d --name calculator -p 8080:8080  --network jenkins-network localhost:5001/calculator-feature:0.1"
-            }
-        }
-
-        stage('Test Calculator') {
-            steps {
-                sh '''
-                pwd
-                echo "Testing Correct Division"
-                result=$(curl "localhost:8080/div?a=6&b=1")
-                if [ "$result" -eq 6 ]; then
-                    echo 'pass'
-                else
-                    echo 'fail'
-                fi
-
-                echo "Testing Incorrect Division"
-                result=$(curl "localhost:8080/div?a=6&b=2")
-                if [ "$result" -eq 3 ]; then
-                    echo 'pass'
-                else
-                    echo 'fail'
-                fi
-
-                echo "Testing Divide by 0"
-                result=$(curl "localhost:8080/div?a=6&b=0")
-                
-                if [ $result -eq "Division by 0" ]; then
-                    echo "pass"
-                else
-                    echo "fail"
-                fi
-                '''
-            }
-        }
-
-        stage('Acceptance Test') {
-            steps {
-                sh '''
-                cd Chapter09/sample3
-                chmod +x gradlew
-                ./gradlew acceptanceTest -D calculator.url=http://localhost:8080
-
-                cat build/reports/tests/acceptanceTest/index.html
-                '''
-            }
-
-
-        }
-    }
-    post {
-        failure {
-            echo 'The pipeline failed.'
-        }
-        always {
-           script {
-
-            sh """
-            docker stop calculator hazelcast
-            docker rm calculator hazelcast
-
-            """
-
-           }
-        }
-    }
+ agent {
+ label 'docker-agent'
+ }
+ stages {
+ stage('Run tests and generate reports') {
+ steps {
+ git url:
+'https://github.com/dlambrig/Continuous-Delivery-with-Docker-and-Jenkins-Second-Edition.git', branch: 'master'
+ sh '''
+ cd Chapter08/sample1
+ export KUBECONFIG=/root/.kube/config.modified
+ kubectl --insecure-skip-tls-verify apply -f calculator.yaml
+ kubectl --insecure-skip-tls-verify apply -f hazelcast.yaml
+ '''
+ }
+ }
+ }
 }
