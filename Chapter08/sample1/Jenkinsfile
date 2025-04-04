@@ -21,7 +21,7 @@ pipeline {
 
  kubectl --insecure-skip-tls-verify get deployment
 
-
+ kubectl --insecure-skip-tls-verify get pods
 
  '''
  }
