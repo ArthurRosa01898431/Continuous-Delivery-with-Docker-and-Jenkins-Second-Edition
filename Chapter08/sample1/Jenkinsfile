@@ -12,6 +12,11 @@ pipeline {
  export KUBECONFIG=/root/.kube/config.modified
  kubectl --insecure-skip-tls-verify apply -f calculator.yaml
  kubectl --insecure-skip-tls-verify apply -f hazelcast.yaml
+ 
+ echo "$(kubectl get service calculator-service --insecure-skip-tls-verify -o jsonpath='{.spec.clusterIP}') calculator-service" >> /etc/hosts
+
+ curl "calculator-service:8080/sum?a=1&b=2"
+
  '''
  }
  }
