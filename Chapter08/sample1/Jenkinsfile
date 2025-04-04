@@ -17,6 +17,12 @@ pipeline {
 
  curl "calculator-service:8080/sum?a=1&b=2"
 
+ kubectl --insecure-skip-tls-verify get service
+
+ kubectl --insecure-skip-tls-verify get deployment
+
+
+
  '''
  }
  }
