@@ -8,6 +8,9 @@ pipeline {
  sh '''
  cd Chapter08/sample1
  export KUBECONFIG=/root/.kube/config.modified
+ kubectl config use-context gke_devops-exersise-11_us-central1_hello-cluster
+ kubectl config current-context
+
  kubectl --insecure-skip-tls-verify apply -f calculator.yaml
  kubectl --insecure-skip-tls-verify apply -f hazelcast.yaml
  
