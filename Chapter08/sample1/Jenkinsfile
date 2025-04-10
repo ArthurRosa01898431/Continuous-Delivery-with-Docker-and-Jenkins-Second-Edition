@@ -3,21 +3,83 @@ pipeline {
         label 'docker-agent'
     }
     stages {
-        stage('Run tests and generate reports') {
+        // stage("Compile") {
+        //     steps {
+        //         sh "cd Chapter08/sample1"
+        //         sh "chmod +x gradlew"
+        //         sh "./gradlew compileJava"
+        //     }
+        // }
+        // stage("Unit test") {
+        //     steps {
+        //         sh "cd Chapter08/sample1"
+        //         sh "chmod +x gradlew"
+        //         sh "./gradlew test"
+        //     }
+        // }
+        // stage("Code coverage") {
+        //     steps {
+        //         sh "cd Chapter08/sample1"
+        //         sh "chmod +x gradlew"
+        //         sh "./gradlew jacocoTestReport"
+        //         sh "./gradlew jacocoTestCoverageVerification"
+        //     }
+        // }
+        // stage("Static code analysis") {
+        //     steps {
+        //         sh "cd Chapter08/sample1"
+        //         sh "chmod +x gradlew"
+        //         sh "./gradlew checkstyleMain"
+        //     }
+        // }
+        stage("Package") {
+            steps {
+                sh "cd Chapter08/sample1"
+                sh "chmod +x gradlew"
+                sh "./gradlew build"
+            }
+        }
+
+        stage("Docker build") {
+            steps {
+                sh "cd Chapter08/sample1"
+                sh "docker build -t arosa/calculator:1.0.0 ."
+            }
+        }
+
+        stage("Docker login") {
+               steps {
+                    withCredentials([usernamePassword(credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        sh "docker login --username $USERNAME --password $PASSWORD"
+                    }
+               }
+          }
+
+          stage("Docker push") {
+               steps {
+                    sh "docker push arosa/calculator:1.0.0"
+               }
+          }
+
+
+        stage("Deploy to staging") {
             steps {
                 sh '''
                 cd Chapter08/sample1
-                export KUBECONFIG=/root/.kube/config.modified
                 kubectl config use-context gke_devops-exersise-11_us-central1_hello-cluster
-                kubectl config current-context
+                kubectl apply -f hazelcast.yaml
+                kubectl apply -f calculator.yaml
+                '''
+            }
+        }
 
-                kubectl --insecure-skip-tls-verify apply -f calculator.yaml
-                kubectl --insecure-skip-tls-verify apply -f hazelcast.yaml
-                
-                echo "$(kubectl get service calculator-service --insecure-skip-tls-verify -o jsonpath='{.spec.clusterIP}') calculator-service" >> /etc/hosts
-
-                curl "calculator-service:8080/sum?a=1&b=2"
-
+        stage("Release") {
+            steps {
+                sh '''
+                cd Chapter08/sample1
+                kubectl config use-context docker-desktop
+                kubectl apply -f hazelcast.yaml
+                kubectl apply -f calculator.yaml
                 '''
             }
         }

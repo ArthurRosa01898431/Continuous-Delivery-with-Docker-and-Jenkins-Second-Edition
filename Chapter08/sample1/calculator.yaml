@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: calculator
-        image: localhost:5001/calculator-feature:0.1
+        image: arosa/calculator
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
