@@ -5,45 +5,57 @@ pipeline {
     stages {
         // stage("Compile") {
         //     steps {
-        //         sh "cd Chapter08/sample1"
-        //         sh "chmod +x gradlew"
-        //         sh "./gradlew compileJava"
+        //         sh '''
+        //         cd Chapter08/sample1
+        //         chmod +x gradlew
+        //         ./gradlew compileJava
+        //         '''
         //     }
         // }
         // stage("Unit test") {
         //     steps {
-        //         sh "cd Chapter08/sample1"
-        //         sh "chmod +x gradlew"
-        //         sh "./gradlew test"
+        //         sh '''
+        //         cd Chapter08/sample1
+        //         chmod +x gradlew
+        //         ./gradlew test
+        //         '''
         //     }
         // }
         // stage("Code coverage") {
         //     steps {
-        //         sh "cd Chapter08/sample1"
-        //         sh "chmod +x gradlew"
-        //         sh "./gradlew jacocoTestReport"
-        //         sh "./gradlew jacocoTestCoverageVerification"
+        //         sh '''
+        //         cd Chapter08/sample1
+        //          chmod +x gradlew
+        //          /gradlew jacocoTestReport
+        //         ./gradlew jacocoTestCoverageVerification
+        //         '''
         //     }
         // }
         // stage("Static code analysis") {
         //     steps {
-        //         sh "cd Chapter08/sample1"
-        //         sh "chmod +x gradlew"
-        //         sh "./gradlew checkstyleMain"
+        //         sh '''
+        //         cd Chapter08/sample1
+        //         chmod +x gradlew
+        //         ./gradlew checkstyleMain
+        //         '''
         //     }
         // }
         stage("Package") {
             steps {
-                sh "cd Chapter08/sample1"
-                sh "chmod +x gradlew"
-                sh "./gradlew build"
+                sh '''
+                cd Chapter08/sample1
+                chmod +x gradlew
+                ./gradlew build
+                '''
             }
         }
 
         stage("Docker build") {
             steps {
-                sh "cd Chapter08/sample1"
-                sh "docker build -t arosa/calculator:1.0.0 ."
+                sh '''
+                cd Chapter08/sample1
+                docker build -t arosa/calculator:1.0.0 .
+                '''
             }
         }
 
