@@ -61,15 +61,15 @@ pipeline {
             }
         }
 
-        // stage("Docker login") {
-        //     steps {
-        //         withCredentials([usernamePassword(credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-        //             sh """
-        //             docker login 172.29.176.1:5001 -u $USERNAME -p $PASSWORD
-        //             """
-        //         }
-        //     }
-        // }
+        stage("Docker login") {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh """
+                    docker login 172.29.176.1:5001 -u $USERNAME -p $PASSWORD
+                    """
+                }
+            }
+        }
 
         stage("Docker push") {
             steps {
