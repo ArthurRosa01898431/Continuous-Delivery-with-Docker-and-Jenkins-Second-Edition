@@ -55,25 +55,26 @@ pipeline {
                 sh '''
                 cd Chapter08/sample1
                 docker build -t arosa/calculator:1.0.0 .
+                docker tag arosa/calculator:1.0.0 localhost:5001/arosa/calculator:1.0.0
                 '''
             }
         }
 
         stage("Docker login") {
-               steps {
-                    withCredentials([usernamePassword(credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        sh """
-                        docker login localhost:5001 -u $USERNAME -p $PASSWORD
-                        """
-                    }
-               }
-          }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh """
+                    docker login localhost:5001 -u $USERNAME -p $PASSWORD
+                    """
+                }
+            }
+        }
 
-          stage("Docker push") {
-               steps {
-                    sh "docker push arosa/calculator:1.0.0"
-               }
-          }
+        stage("Docker push") {
+            steps {
+                sh "docker push localhost:5001/arosa/calculator:1.0.0"
+            }
+        }
 
 
         stage("Deploy to staging") {
