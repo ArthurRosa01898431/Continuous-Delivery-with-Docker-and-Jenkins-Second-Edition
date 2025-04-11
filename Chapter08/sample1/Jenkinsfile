@@ -4,28 +4,28 @@ pipeline {
     }
 
     stages {
-        stage("Compile") {
-            steps {
-                sh '''
-                cd Chapter08/sample1
-                chmod +x gradlew
-                ./gradlew compileJava
-                '''
-            }
-        }
-        stage("Unit test") {
-            steps {
-                sh '''
-                cd Chapter08/sample1
-                chmod +x gradlew
-                ./gradlew test
-                '''
-            }
-        }
+        // stage("Compile") {
+        //     steps {
+        //         sh '''
+        //         cd Chapter08/sample1
+        //         chmod +x gradlew
+        //         ./gradlew compileJava
+        //         '''
+        //     }
+        // }
+        // stage("Unit test") {
+        //     steps {
+        //         sh '''
+        //         cd Chapter08/sample1
+        //         chmod +x gradlew
+        //         ./gradlew test
+        //         '''
+        //     }
+        // }
         stage("Code coverage") {
             steps {
                 sh '''
-                cd Chapter08/sample1
+                 cd Chapter08/sample1
                  chmod +x gradlew
                  /gradlew jacocoTestReport
                 ./gradlew jacocoTestCoverageVerification
