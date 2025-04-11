@@ -3,47 +3,44 @@ pipeline {
         label 'docker-agent'
     }
 
-    environment {
-        REGISTRY = "localhost:5001"
-    }
     stages {
-        // stage("Compile") {
-        //     steps {
-        //         sh '''
-        //         cd Chapter08/sample1
-        //         chmod +x gradlew
-        //         ./gradlew compileJava
-        //         '''
-        //     }
-        // }
-        // stage("Unit test") {
-        //     steps {
-        //         sh '''
-        //         cd Chapter08/sample1
-        //         chmod +x gradlew
-        //         ./gradlew test
-        //         '''
-        //     }
-        // }
-        // stage("Code coverage") {
-        //     steps {
-        //         sh '''
-        //         cd Chapter08/sample1
-        //          chmod +x gradlew
-        //          /gradlew jacocoTestReport
-        //         ./gradlew jacocoTestCoverageVerification
-        //         '''
-        //     }
-        // }
-        // stage("Static code analysis") {
-        //     steps {
-        //         sh '''
-        //         cd Chapter08/sample1
-        //         chmod +x gradlew
-        //         ./gradlew checkstyleMain
-        //         '''
-        //     }
-        // }
+        stage("Compile") {
+            steps {
+                sh '''
+                cd Chapter08/sample1
+                chmod +x gradlew
+                ./gradlew compileJava
+                '''
+            }
+        }
+        stage("Unit test") {
+            steps {
+                sh '''
+                cd Chapter08/sample1
+                chmod +x gradlew
+                ./gradlew test
+                '''
+            }
+        }
+        stage("Code coverage") {
+            steps {
+                sh '''
+                cd Chapter08/sample1
+                 chmod +x gradlew
+                 /gradlew jacocoTestReport
+                ./gradlew jacocoTestCoverageVerification
+                '''
+            }
+        }
+        stage("Static code analysis") {
+            steps {
+                sh '''
+                cd Chapter08/sample1
+                chmod +x gradlew
+                ./gradlew checkstyleMain
+                '''
+            }
+        }
         stage("Package") {
             steps {
                 sh '''
@@ -68,7 +65,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh """
-                    docker login ${REGISTRY} -u $USERNAME -p $PASSWORD
+                    docker login localhost:5001 -u $USERNAME -p $PASSWORD
                     """
                 }
             }
@@ -100,6 +97,18 @@ pipeline {
                 kubectl apply -f hazelcast.yaml
                 kubectl apply -f calculator.yaml
                 '''
+            }
+        }
+
+        stage("Smoke test") {
+            steps {
+                sleep 60
+                sh '''
+                    cd Chapter08/sample1
+                    chmod +x smoke-test.sh
+                    ./smoke-test.sh
+                    ./gradlew build
+                '''              
             }
         }
     }  
