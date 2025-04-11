@@ -2,6 +2,10 @@ pipeline {
     agent {
         label 'docker-agent'
     }
+
+    environment {
+        REGISTRY = "localhost:5001"
+    }
     stages {
         // stage("Compile") {
         //     steps {
@@ -64,7 +68,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh """
-                    docker login localhost:5001 -u $USERNAME -p $PASSWORD
+                    docker login ${REGISTRY} -u $USERNAME -p $PASSWORD
                     """
                 }
             }
