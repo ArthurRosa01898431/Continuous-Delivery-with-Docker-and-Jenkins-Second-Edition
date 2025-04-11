@@ -4,43 +4,43 @@ pipeline {
     }
 
     stages {
-        // stage("Compile") {
-        //     steps {
-        //         sh '''
-        //         cd Chapter08/sample1
-        //         chmod +x gradlew
-        //         ./gradlew compileJava
-        //         '''
-        //     }
-        // }
-        // stage("Unit test") {
-        //     steps {
-        //         sh '''
-        //         cd Chapter08/sample1
-        //         chmod +x gradlew
-        //         ./gradlew test
-        //         '''
-        //     }
-        // }
-        // stage("Code coverage") {
-        //     steps {
-        //         sh '''
-        //          cd Chapter08/sample1
-        //          chmod +x gradlew
-        //         ./gradlew jacocoTestReport
-        //         ./gradlew jacocoTestCoverageVerification
-        //         '''
-        //     }
-        // }
-        // stage("Static code analysis") {
-        //     steps {
-        //         sh '''
-        //         cd Chapter08/sample1
-        //         chmod +x gradlew
-        //         ./gradlew checkstyleMain
-        //         '''
-        //     }
-        // }
+        stage("Compile") {
+            steps {
+                sh '''
+                cd Chapter08/sample1
+                chmod +x gradlew
+                ./gradlew compileJava
+                '''
+            }
+        }
+        stage("Unit test") {
+            steps {
+                sh '''
+                cd Chapter08/sample1
+                chmod +x gradlew
+                ./gradlew test
+                '''
+            }
+        }
+        stage("Code coverage") {
+            steps {
+                sh '''
+                 cd Chapter08/sample1
+                 chmod +x gradlew
+                ./gradlew jacocoTestReport
+                ./gradlew jacocoTestCoverageVerification
+                '''
+            }
+        }
+        stage("Static code analysis") {
+            steps {
+                sh '''
+                cd Chapter08/sample1
+                chmod +x gradlew
+                ./gradlew checkstyleMain
+                '''
+            }
+        }
         stage("Package") {
             steps {
                 sh '''
