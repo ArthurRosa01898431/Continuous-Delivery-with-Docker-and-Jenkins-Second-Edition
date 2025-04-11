@@ -82,18 +82,28 @@ pipeline {
             steps {
                 sh '''
                 cd Chapter08/sample1
-                kubectl config use-context gke_devops-exersise-11_us-central1_hello-cluster
+                kubectl config use-context docker-desktop
                 kubectl apply -f hazelcast.yaml
                 kubectl apply -f calculator.yaml
                 '''
             }
         }
 
+        stage("Acceptance test") {
+               steps {
+                sh '''
+                    cd Chapter08/sample1
+                    chmod +x acceptance-test.sh
+                    ./acceptance-test.sh
+                '''
+               }
+          }
+
         stage("Release") {
             steps {
                 sh '''
                 cd Chapter08/sample1
-                kubectl config use-context docker-desktop
+                kubectl config use-context gke_devops-exersise-11_us-central1_hello-cluster
                 kubectl apply -f hazelcast.yaml
                 kubectl apply -f calculator.yaml
                 '''
